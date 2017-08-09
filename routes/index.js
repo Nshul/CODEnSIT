@@ -9,21 +9,21 @@ router.get('/', function(req,res){
 });
 
 // register form
-router.get('/register', (req,res) => {
-    res.render('register');
+router.get('/signup', (req,res) => {
+    res.render('signup');
 });
 
 // sign up logic
-router.post('/register', (req,res) => {
+router.post('/signup', (req,res) => {
     User.register(new User({
         username: req.body.username
     }), req.body.password, (err, user) => {
         if(err){
             console.log(err);
-            return res.render("register");
+            return res.render("signup");
         }
         passport.authenticate('local')(req,res, function() {
-            res.redirect('/index');
+            res.redirect('/');
         });
     });
 });
@@ -35,8 +35,8 @@ router.get('/login', (req,res) => {
 
 // login logic
 router.post('/login', passport.authenticate('local', {
-    successRedirect: '/index',
-    failureRedirect: '/register'
+    successRedirect: '/',
+    failureRedirect: '/signup'
 }), (req,res) => {
 });
 
