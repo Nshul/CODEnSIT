@@ -5,6 +5,7 @@ const express        = require("express"),
       passport       = require("passport"),
       localStrategy  = require("passport-local"),
       User           = require("./models/user"),
+      path           = require('path'),
       methodOverride = require("method-override");
 
 // requiring routes
@@ -19,6 +20,7 @@ app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
 app.use(methodOverride('_method'));
 app.set('view engine', 'ejs');
+app.use('/', express.static(path.join(__dirname, 'public')));
 
 // PASSPORT CONFIG
 app.use(require("express-session")({

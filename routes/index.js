@@ -5,7 +5,7 @@ const express  = require("express"),
 
 // HOME PAGE
 router.get('/', function(req,res){
-    res.render('landing');
+    res.render('index');
 });
 
 // register form
@@ -23,7 +23,7 @@ router.post('/register', (req,res) => {
             return res.render("register");
         }
         passport.authenticate('local')(req,res, function() {
-            res.redirect('/home');
+            res.redirect('/index');
         });
     });
 });
@@ -35,7 +35,7 @@ router.get('/login', (req,res) => {
 
 // login logic
 router.post('/login', passport.authenticate('local', {
-    successRedirect: '/home',
+    successRedirect: '/index',
     failureRedirect: '/register'
 }), (req,res) => {
 });
@@ -43,7 +43,7 @@ router.post('/login', passport.authenticate('local', {
 // logout route
 router.get('/logout', (req,res) => {
     req.logout();
-    res.redirect('/home');
+    res.redirect('/index');
 });
 
 module.exports = router;
