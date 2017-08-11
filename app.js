@@ -6,6 +6,9 @@ const express        = require("express"),
       localStrategy  = require("passport-local"),
       User           = require("./models/user"),
       path           = require('path'),
+      fs             = require('fs'),
+      https          = require('https'),
+      ExpPeerServer  = require('peer').ExpressPeerServer;
       methodOverride = require("method-override");
 
 // requiring routes
@@ -41,8 +44,32 @@ app.use(function(req,res,next){
     next();
 });
 
+let options = {
+    debug: true
+};
+
+let server = https.createServer({
+    key: fs.readFileSync('./public/server.key'),
+    cert: fs.readFileSync('./public/server.crt'),
+    passphrase: 'codingblocks',
+    requestCert:true,
+    rejectUnauthorized: false
+},app).listen(process.env.PORT, function () {
+    console.log(`Server started on http://localhost:${process.env.PORT}`);
+});
+
+let peerServer =  ExpPeerServer(server,options);
+
+app.use('/peerjs',peerServer);
 app.use(indexRoutes);
 
-app.listen(8000, () => {
-    console.log('Server has started');
+peerServer.on('connection',(id)=>{
+    console.log("New peer connected:");
+    console.log(id);
+    console.log(peerServer._clients);
+});
+
+peerServer.on('disconnect',(id)=>{
+    console.log("Peer disconnected");
+    console.log(id);
 });

@@ -5,7 +5,17 @@ const express  = require("express"),
 
 // HOME PAGE
 router.get('/', function(req,res){
-    res.render('index');
+    res.render('index', {
+        page: 'index'
+    });
+});
+
+// Chat Page
+router.get('/chat', function (req,res) {
+    res.render('chat', {
+        Port: process.env.PORT,
+        page: 'chat'
+    });
 });
 
 // register form
@@ -43,7 +53,7 @@ router.post('/login', passport.authenticate('local', {
 // logout route
 router.get('/logout', (req,res) => {
     req.logout();
-    res.redirect('/index');
+    res.redirect('/');
 });
 
 module.exports = router;

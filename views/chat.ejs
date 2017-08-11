@@ -1,0 +1,36 @@
+<% include ./partials/header.ejs %>
+<% include ./partials/navbar.ejs %>
+
+<br><br><br><br><br>
+<div class="ui container">
+    <div class="ui input">
+        <input type="text" placeholder="Peer ID TO connect to" id="peerid">
+    </div>
+    <button class="ui button red inverted"type="button" id="buttonpeer">Connect</button>
+    <button class="ui button red inverted"type="button" id="callpeer">Call</button>
+    <button class="ui button red inverted" type="button" id="acceptcall">Accept</button>
+    <br>
+    <div id="step3">
+        <p>Currently in call with: <span id="their-id"></span></p>
+        <button class="ui button red inverted" type="button" id="endcall">End</button>
+    </div>
+    <ul id="messages"></ul>
+    <div id="vid-container">
+        <video autoplay id="receivedvid"></video>
+        <video id="myvid" autoplay muted="true" width="300px"></video>
+    </div>
+    <div class="ui input">
+        <input type="text" placeholder="Send message" id="msgtxt">
+    </div>
+    <button class="ui button red inverted" type="button" id="sendmsg">Send</button>
+</div>
+
+<% include ./partials/footer.ejs%>
+
+<script src="/js/peer.js"></script>
+<script>
+    var peer = new Peer({host: '192.168.0.108',port: <%= Port%>,path :'/peerjs',secure:true});
+</script>
+<script src="/js/chat_script.js"></script>
+</body>
+</html>
