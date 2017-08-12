@@ -7,19 +7,11 @@ $(function () {
     let msgtxt = $('#msgtxt');
     let sendmsg = $('#sendmsg');
     let call = $('#callpeer');
-    // let canvas = $('#mediacanvas');
     let videlement = $('#videlement');
     let acceptcall = $('#acceptcall');
     let endcall = $('#endcall');
+    let Otherpeerid;
     $('#step3').hide();
-
-    peer.on('open',(id)=>{
-        console.log("My peer id is :"+id);
-        peerID = id;
-    });
-
-    // navigator.getUserMedia({audio: true, video: true}, function(stream){
-    // window.localStream = stream;
 
     peer.on('call',(call)=>{
         acceptcall.show();
@@ -31,15 +23,17 @@ $(function () {
     });
 
     endcall.click(()=>{
-        window.existingCall.close();step2();
+        window.existingCall.close();
+        step2();
+        $('#receivedvid').prop('src', '');
     });
 
     step1();
 
     call.click(()=>{
-            var call = peer.call(peerid.val(),window.localStream)
+        var call = peer.call(Otherpeerid,window.localStream);
         step3(call);
-        });
+    });
 
     function step3 (call) {
         // Hang up on an existing call if present
@@ -74,32 +68,32 @@ $(function () {
     }
 
     connect.click(()=>{
-        var conn = peer.connect(peerid.val());
-        console.log("connection established");
-        // console.log(conn);
+        $.get('/getpeerId?username=' + peerid.val(), function (id) {
+            if(id!=='0'){
+                let conn = peer.connect(id);
+                Otherpeerid = id;
 
-        sendmsg.click(()=>{
-            conn.send(msgtxt.val());
-            console.log("Message sent(connect.click()):",msgtxt.val());
+                conn.send("Connection has been established");
+
+                sendmsg.click(()=>{
+                    conn.send(msgtxt.val());
+                    console.log("Message sent(connect.click()):",msgtxt.val());
+                });
+
+                conn.on('data',function (data) {
+                    msglist.append(`<li>${data}</li>`);
+                    console.log("Received(connect.click()):",data);
+                })
+            } else {
+                alert('entered username does not exist or is not online');
+            }
         });
-
-        conn.on('data',function (data) {
-            msglist.append(`<li>${data}</li>`);
-            console.log("Received(connect.click()):",data);
-        })
     });
-
-    // peer.on('call',(call)=>{
-    //     call.answer(window.localStream);
-    //     call.on('stream',(stream)=>{
-    //         canvas.prop("src",URL.createObjectURL(stream));
-    //     })
-    // })
 
     peer.on('error',(err)=>{
         alert(err.message);
         step2();
-    })
+    });
 
     peer.on('connection',(conn)=>{
         conn.on('open',()=>{
@@ -108,14 +102,13 @@ $(function () {
                 msglist.append(`<li>${data}</li>`);
             });
 
-            conn.send("Connection has been established with ",conn.peer);
+            console.log(conn);
+            conn.send("Connection has been established");
+
             sendmsg.click(()=>{
                 conn.send(msgtxt.val());
                 console.log("Message sent(peer.on):",msgtxt.val());
             });
         });
-
-
     })
-
 });

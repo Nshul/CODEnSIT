@@ -4,7 +4,7 @@
 <br><br><br><br><br>
 <div class="ui container">
     <div class="ui input">
-        <input type="text" placeholder="Peer ID TO connect to" id="peerid">
+        <input type="text" placeholder="Username to connect to" id="peerid">
     </div>
     <button class="ui button red inverted"type="button" id="buttonpeer">Connect</button>
     <button class="ui button red inverted"type="button" id="callpeer">Call</button>
@@ -29,7 +29,12 @@
 
 <script src="/js/peer.js"></script>
 <script>
-    var peer = new Peer({host: '192.168.0.108',port: <%= Port%>,path :'/peerjs',secure:true});
+    var peer = new Peer('<%= currentUser._id %>', {host: '192.168.0.108',port: <%= Port%>,path :'/peerjs',secure:true});
+    console.log(peer);
+    peer.on('open',(id)=>{
+        console.log("My peer id is :" + id);
+        peerID = id;
+    });
 </script>
 <script src="/js/chat_script.js"></script>
 </body>
