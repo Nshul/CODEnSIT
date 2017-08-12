@@ -8,7 +8,7 @@ const express        = require("express"),
       path           = require('path'),
       fs             = require('fs'),
       https          = require('https'),
-      ExpPeerServer  = require('peer').ExpressPeerServer;
+      ExpPeerServer  = require('peer').ExpressPeerServer,
       methodOverride = require("method-override");
 
 // requiring routes

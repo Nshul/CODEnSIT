@@ -10,27 +10,28 @@ $(function () {
     let videlement = $('#videlement');
     let acceptcall = $('#acceptcall');
     let endcall = $('#endcall');
+    let sendBox = $('#sendBox');
     let Otherpeerid;
+
     $('#step3').hide();
+    call.hide();
+    sendBox.hide();
+    acceptcall.hide();
 
     peer.on('call',(call)=>{
         acceptcall.show();
         endcall.show();
+        $('#callpeer').hide();
         acceptcall.click(()=>{
             call.answer(window.localStream);
             step3(call);
-        })
-    });
-
-    endcall.click(()=>{
-        window.existingCall.close();
-        step2();
-        $('#receivedvid').prop('src', '');
+        });
     });
 
     step1();
 
     call.click(()=>{
+        $('#callpeer').hide();
         var call = peer.call(Otherpeerid,window.localStream);
         step3(call);
     });
@@ -51,6 +52,7 @@ $(function () {
         $('#their-id').val(call.peer);
         call.on('close', step2);
         $('#step3').show();
+        acceptcall.hide();
     }
 
     function step1(){
@@ -58,9 +60,9 @@ $(function () {
             $('#myvid').prop("src",URL.createObjectURL(stream));
             window.localStream = stream;
             step2();
-        },function () {
-            console.log("Error with webcam in step1 encountered");
-        })
+        }, (err) => {
+            console.log(err);
+        });
     }
 
     function step2(){
@@ -73,6 +75,10 @@ $(function () {
                 let conn = peer.connect(id);
                 Otherpeerid = id;
 
+                connect.hide();
+                call.show();
+                sendBox.show();
+
                 conn.send("Connection has been established");
 
                 sendmsg.click(()=>{
@@ -81,9 +87,25 @@ $(function () {
                 });
 
                 conn.on('data',function (data) {
-                    msglist.append(`<li>${data}</li>`);
-                    console.log("Received(connect.click()):",data);
-                })
+                    if(data==='END CALL'){
+                        window.existingCall.close();
+                        step2();
+                        $('#receivedvid').prop('src', '');
+                        call.show();
+                    } else {
+                        console.log("Received(connect.click()):",data);
+                        msglist.append(`<li>${data}</li>`);
+                    }
+                });
+
+                endcall.click(()=>{
+                    window.existingCall.close();
+                    conn.send('END CALL');
+                    step2();
+                    $('#receivedvid').prop('src', '');
+                    call.show();
+                });
+
             } else {
                 alert('entered username does not exist or is not online');
             }
@@ -97,18 +119,37 @@ $(function () {
 
     peer.on('connection',(conn)=>{
         conn.on('open',()=>{
+
+            connect.hide();
+            call.show();
+            sendBox.show();
+
             conn.on('data',(data)=>{
-                console.log('Received(peer.on)',data);
-                msglist.append(`<li>${data}</li>`);
+                if(data==='END CALL'){
+                    window.existingCall.close();
+                    step2();
+                    $('#receivedvid').prop('src', '');
+                    call.show();
+                } else {
+                    console.log('Received(peer.on)',data);
+                    msglist.append(`<li>${data}</li>`);
+                }
             });
 
-            console.log(conn);
-            conn.send("Connection has been established");
+            conn.send(peerID);
 
             sendmsg.click(()=>{
                 conn.send(msgtxt.val());
                 console.log("Message sent(peer.on):",msgtxt.val());
             });
+
+            endcall.click(()=>{
+                window.existingCall.close();
+                conn.send('END CALL');
+                step2();
+                $('#receivedvid').prop('src', '');
+                call.show();
+            });
         });
-    })
+    });
 });

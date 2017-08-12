@@ -19,10 +19,12 @@
         <video autoplay id="receivedvid"></video>
         <video id="myvid" autoplay muted="true" width="300px"></video>
     </div>
-    <div class="ui input">
-        <input type="text" placeholder="Send message" id="msgtxt">
+    <div id="sendBox">
+        <div class="ui input">
+            <input type="text" placeholder="Send message" id="msgtxt">
+        </div>
+        <button class="ui button red inverted" type="button" id="sendmsg">Send</button>
     </div>
-    <button class="ui button red inverted" type="button" id="sendmsg">Send</button>
 </div>
 
 <% include ./partials/footer.ejs%>
