@@ -32,6 +32,7 @@ $(function () {
 
     call.click(()=>{
         $('#callpeer').hide();
+        console.log(Otherpeerid);
         var call = peer.call(Otherpeerid,window.localStream);
         step3(call);
     });
@@ -79,15 +80,13 @@ $(function () {
                 call.show();
                 sendBox.show();
 
-                conn.send("Connection has been established");
-
                 sendmsg.click(()=>{
                     conn.send(msgtxt.val());
                     console.log("Message sent(connect.click()):",msgtxt.val());
                 });
 
                 conn.on('data',function (data) {
-                    if(data==='END CALL'){
+                    if(data==='$END CALL$'){
                         window.existingCall.close();
                         step2();
                         $('#receivedvid').prop('src', '');
@@ -100,7 +99,7 @@ $(function () {
 
                 endcall.click(()=>{
                     window.existingCall.close();
-                    conn.send('END CALL');
+                    conn.send('$END CALL$');
                     step2();
                     $('#receivedvid').prop('src', '');
                     call.show();
@@ -123,8 +122,14 @@ $(function () {
             call.show();
             sendBox.show();
 
+            for(var data in peer.connections) {
+                if(peer.connections.hasOwnProperty(data)){
+                    Otherpeerid = data;
+                }
+            }
+
             conn.on('data',(data)=>{
-                if(data==='END CALL'){
+                if(data==='$END CALL$'){
                     window.existingCall.close();
                     step2();
                     $('#receivedvid').prop('src', '');
@@ -135,8 +140,6 @@ $(function () {
                 }
             });
 
-            conn.send(peerID);
-
             sendmsg.click(()=>{
                 conn.send(msgtxt.val());
                 console.log("Message sent(peer.on):",msgtxt.val());
@@ -144,7 +147,7 @@ $(function () {
 
             endcall.click(()=>{
                 window.existingCall.close();
-                conn.send('END CALL');
+                conn.send('$END CALL$');
                 step2();
                 $('#receivedvid').prop('src', '');
                 call.show();

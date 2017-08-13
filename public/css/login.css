@@ -10,3 +10,89 @@ body > .grid {
 .column {
     max-width: 450px;
 }
+
+@keyframes fade {
+    0%{
+        opacity: 0;
+        position: relative;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+
+#animation{
+    position: fixed;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #009c95;
+}
+
+.outer{
+    height: 200px;
+    width: 200px;
+    display: block;
+    margin: 18% auto;
+}
+.box{
+    width: 33%;
+    height: 33%;
+    float: left;
+    background-color: white;
+    animation: loader 0.35s 2 ease-in-out;
+}
+
+@keyframes loader {
+    0%,70%{
+        transform: scale3d(1,1,1);
+    }
+    35%{
+        transform: scale3d(0,0,1);
+        opacity: 0.1;
+    }
+    100%{
+        transform: scale3d(1,1,1);
+    }
+}
+
+.s7{
+    animation-delay: 0.05s;
+}
+.s4,.s8{
+    animation-delay: 0.1s;
+}
+.s1,.s5,.s9{
+    animation-delay: 0.15s;
+}
+.s2,.s6{
+    animation-delay: 0.2s;
+}
+.s3{
+    animation-delay: 0.25s;
+}
+
+.animate{
+    animation: fade 0.5s ease-in-out;
+    display: block !important;
+}
+
+#box2{
+    display: none;
+    height: 100%;
+}
+
+#box2 .grid {
+    height: 100%;
+}
+
+@media (max-width: 576px){
+    .outer{
+        height: 100px;
+        width: 100px;
+        margin: 60% auto;
+    }
+}
