@@ -105,7 +105,6 @@ $(function () {
                     $('#receivedvid').prop('src', '');
                     call.show();
                 });
-
             } else {
                 alert('entered username does not exist or is not online');
             }

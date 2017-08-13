@@ -1,0 +1,18 @@
+<div class='ui container'>
+    <% if(error && error.length > 0) { %>
+    <div class="ui floating large warning message">
+        <i class="close icon"></i>
+        <div class="header">
+            <%= error %>
+        </div>
+    </div>
+    <% }%>
+    <% if(success && success.length > 0) { %>
+    <div class="ui floating positive message">
+        <i class="close icon"></i>
+        <div class="header">
+            <%= success %>
+        </div>
+    </div>
+    <% }%>
+</div>

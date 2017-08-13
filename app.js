@@ -9,6 +9,7 @@ const express        = require("express"),
       fs             = require('fs'),
       https          = require('https'),
       ExpPeerServer  = require('peer').ExpressPeerServer,
+      flash          = require('connect-flash'),
       methodOverride = require("method-override");
 
 // requiring routes
@@ -19,6 +20,7 @@ mongoose.Promise = global.Promise;
 
 mongoose.connect('mongodb://anshul98ks123:password@ds147821.mlab.com:47821/finalproject');
 
+app.use(flash());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
@@ -42,7 +44,9 @@ passport.deserializeUser(User.deserializeUser());
 // it will send the user details by passport to every page
 app.use(function(req,res,next){
     res.locals.currentUser = req.user;
-    next();
+    res.locals.error = req.flash('error');
+    res.locals.success = req.flash('success');
+    next();app.use(flash());
 });
 
 let options = {

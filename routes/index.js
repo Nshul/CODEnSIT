@@ -30,9 +30,10 @@ router.post('/signup', (req,res) => {
     }), req.body.password, (err, user) => {
         if(err){
             console.log(err);
-            return res.render("signup");
+            return res.render("signup", {error: err.message});
         }
         passport.authenticate('local')(req,res, function() {
+            req.flash('success','Welcome to Site ' + user.username);
             res.redirect('/');
         });
     });
@@ -46,13 +47,16 @@ router.get('/login', (req,res) => {
 // login logic
 router.post('/login', passport.authenticate('local', {
     successRedirect: '/',
-    failureRedirect: '/signup'
+    failureRedirect: '/signup',
+    successFlash: 'Successfully Logged in',
+    failureFlash: 'Invalid username or password'
 }), (req,res) => {
 });
 
 // logout route
 router.get('/logout', (req,res) => {
     req.logout();
+    req.flash('success', 'Logged you out!');
     res.redirect('/');
 });
 
@@ -60,6 +64,7 @@ function isLoggedIn(req,res,next) {
     if(req.isAuthenticated()){
         return next();
     }
+    req.flash('error', 'You must login first');
     res.redirect('/login');
 }
 
