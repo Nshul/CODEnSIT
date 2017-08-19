@@ -14,6 +14,7 @@ const express        = require("express"),
 
 // requiring routes
 const indexRoutes = require("./routes/index"),
+      chats       = require("./routes/chats"),
       ajax        = require('./routes/ajax');
 
 mongoose.Promise = global.Promise;
@@ -68,6 +69,7 @@ let peerServer =  ExpPeerServer(server,options);
 app.use('/peerjs',peerServer);
 app.use(indexRoutes);
 app.use(ajax);
+app.use(chats);
 
 peerServer.on('connection',(id)=>{
     console.log("New peer connected:");

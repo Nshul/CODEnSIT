@@ -1,17 +1,16 @@
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 $(function () {
-    let peerID;
     let peerid = $('#peerid');
     let connect = $('#buttonpeer');
     let msglist = $('#messages');
     let msgtxt = $('#msgtxt');
     let sendmsg = $('#sendmsg');
     let call = $('#callpeer');
-    let videlement = $('#videlement');
     let acceptcall = $('#acceptcall');
     let endcall = $('#endcall');
     let sendBox = $('#sendBox');
-    let Otherpeerid;
+    let clearButton = $('#clear');
+    let Otherpeerid, Otherusername='';
 
     $('#step3').hide();
     call.hide();
@@ -50,8 +49,18 @@ $(function () {
 
         // UI stuff
         window.existingCall = call;
-        $('#their-id').val(call.peer);
+
         call.on('close', step2);
+        if(Otherusername===''){
+            $.get('/getusername?id=' + Otherpeerid, (data) => {
+                Otherusername = data;
+                console.log(data);
+                console.log(Otherusername);
+                $('#their-id').text(Otherusername);
+            });
+        } else {
+            $('#their-id').val(Otherusername);
+        }
         $('#step3').show();
         acceptcall.hide();
     }
@@ -70,19 +79,98 @@ $(function () {
         $('#step3').hide();
     }
 
+    clearButton.click(()=> {
+        $.get('/clearchat?sender=' + myusername +
+            '&reciever=' + Otherusername, (success)=> {
+            if(success){
+                msglist.html('');
+            } else {
+                alert('error in clearing chat');
+            }
+        });
+    });
+
     connect.click(()=>{
         $.get('/getpeerId?username=' + peerid.val(), function (id) {
             if(id!=='0'){
                 let conn = peer.connect(id);
+                Otherusername = peerid.val();
                 Otherpeerid = id;
 
                 connect.hide();
                 call.show();
-                sendBox.show();
+
+                $.get('/getchat?sender=' + myusername +
+                    '&reciever=' + Otherusername, function (comments) {
+                    for(let chat of comments) {
+                        let img;
+                        (chat.author === myusername) ? img='matt.jpg' : img='elliot.jpg';
+                        let name;
+                        (chat.author === myusername) ? name='You' : name=chat.author;
+                        msglist.append(`
+                        <div class="comment">
+                            <a class="avatar">
+                                <img src="/img/${img}">
+                            </a>
+                            <div class="content">
+                                <a class="author">${name}</a>
+                                <div class="text">
+                                    ${chat.text}
+                                </div>
+                            </div>
+                        </div>`);
+                    }
+                    sendBox.show();
+                });
 
                 sendmsg.click(()=>{
                     conn.send(msgtxt.val());
-                    console.log("Message sent(connect.click()):",msgtxt.val());
+                    $.get('/sendmsg?msg='+msgtxt.val()
+                        + '&sender=' + myusername
+                        + '&receiver=' + Otherusername, function (success) {
+                        if(success){
+                            msglist.append(`
+                            <div class="comment">
+                                <a class="avatar">
+                                    <img src="/img/matt.jpg">
+                                </a>
+                                <div class="content">
+                                    <a class="author">You</a>
+                                    <div class="text">
+                                        ${msgtxt.val()}
+                                    </div>
+                                </div>
+                            </div>`);
+                            console.log("Message sent(connect.click()):",msgtxt.val());
+                            msgtxt.val('');
+                        }
+                    });
+                });
+
+                msgtxt.keydown((e)=> {
+                    if(e.keyCode === 13) {
+                        conn.send(msgtxt.val());
+                        $.get('/sendmsg?msg='+msgtxt.val()
+                            + '&sender=' + myusername
+                            + '&receiver=' + Otherusername, function (success) {
+                            if(success){
+                                msglist.append(`
+                            <div class="comment">
+                                <a class="avatar">
+                                    <img src="/img/matt.jpg">
+                                </a>
+                                <div class="content">
+                                    <a class="author">You</a>
+                                    <div class="text">
+                                        ${msgtxt.val()}
+                                    </div>
+                                </div>
+                            </div>`);
+                                console.log("Message sent(connect.click()):",msgtxt.val());
+                                msgtxt.val('');
+                            }
+                        });
+                    }
                 });
 
                 conn.on('data',function (data) {
@@ -92,8 +180,25 @@ $(function () {
                         $('#receivedvid').prop('src', '');
                         call.show();
                     } else {
-                        console.log("Received(connect.click()):",data);
-                        msglist.append(`<li>${data}</li>`);
+                        $.get('/recievemsg?msg='+data
+                            + '&sender=' + myusername
+                            + '&receiver=' + Otherusername, function (success) {
+                            if(success){
+                                msglist.append(`
+                                <div class="comment">
+                                    <a class="avatar">
+                                        <img src="/img/elliot.jpg">
+                                    </a>
+                                    <div class="content">
+                                        <a class="author">${Otherusername}</a>
+                                        <div class="text">
+                                            ${data}
+                                        </div>
+                                    </div>
+                                </div>`);
+                                console.log("Received(connect.click()):",data);
+                            }
+                        });
                     }
                 });
 
@@ -120,11 +225,36 @@ $(function () {
 
             connect.hide();
             call.show();
-            sendBox.show();
 
             for(var data in peer.connections) {
                 if(peer.connections.hasOwnProperty(data)){
+                    console.log(peer.connections);
                     Otherpeerid = data;
+                    $.get('/getusername?id=' + data, (Other)=>{
+                        Otherusername = Other;
+                        $.get('/getchat?sender=' + myusername +
+                            '&reciever=' + Otherusername, function (comments) {
+                            for(let chat of comments) {
+                                let img;
+                                (chat.author === myusername) ? img='matt.jpg' : img='elliot.jpg';
+                                let name;
+                                (chat.author === myusername) ? name='You' : name=chat.author;
+                                msglist.append(`
+                                <div class="comment">
+                                    <a class="avatar">
+                                        <img src="/img/${img}">
+                                    </a>
+                                    <div class="content">
+                                        <a class="author">${name}</a>
+                                        <div class="text">
+                                            ${chat.text}
+                                        </div>
+                                    </div>
+                                </div>`);
+                            }
+                            sendBox.show();
+                        });
+                    });
                 }
             }
 
@@ -135,14 +265,76 @@ $(function () {
                     $('#receivedvid').prop('src', '');
                     call.show();
                 } else {
-                    console.log('Received(peer.on)',data);
-                    msglist.append(`<li>${data}</li>`);
+                    $.get('/recievemsg?msg='+data
+                        + '&sender=' + myusername
+                        + '&receiver=' + Otherusername, function (success) {
+                        if(success){
+                            msglist.append(`
+                            <div class="comment">
+                                <a class="avatar">
+                                    <img src="/img/elliot.jpg">
+                                </a>
+                                <div class="content">
+                                    <a class="author">${Otherusername}</a>
+                                    <div class="text">
+                                        ${data}
+                                    </div>
+                                </div>
+                            </div>`);
+                            console.log('Received(peer.on)',data);
+                        }
+                    });
                 }
             });
 
             sendmsg.click(()=>{
                 conn.send(msgtxt.val());
-                console.log("Message sent(peer.on):",msgtxt.val());
+                $.get('/sendmsg?msg='+msgtxt.val()
+                    + '&sender=' + myusername
+                    + '&receiver=' + Otherusername, function (success) {
+                    if(success){
+                        msglist.append(`
+                            <div class="comment">
+                                <a class="avatar">
+                                    <img src="/img/matt.jpg">
+                                </a>
+                                <div class="content">
+                                    <a class="author">${myusername}</a>
+                                    <div class="text">
+                                        ${msgtxt.val()}
+                                    </div>
+                                </div>
+                            </div>`);
+                        console.log("Message sent(peer.on):",msgtxt.val());
+                        msgtxt.val('');
+                    }
+                });
+            });
+
+            msgtxt.keydown((e)=> {
+                if(e.keyCode === 13) {
+                    conn.send(msgtxt.val());
+                    $.get('/sendmsg?msg='+msgtxt.val()
+                        + '&sender=' + myusername
+                        + '&receiver=' + Otherusername, function (success) {
+                        if(success){
+                            msglist.append(`
+                            <div class="comment">
+                                <a class="avatar">
+                                    <img src="/img/matt.jpg">
+                                </a>
+                                <div class="content">
+                                    <a class="author">${myusername}</a>
+                                    <div class="text">
+                                        ${msgtxt.val()}
+                                    </div>
+                                </div>
+                            </div>`);
+                            console.log("Message sent(peer.on()):",msgtxt.val());
+                            msgtxt.val('');
+                        }
+                    });
+                }
             });
 
             endcall.click(()=>{

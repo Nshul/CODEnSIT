@@ -1,25 +1,17 @@
 const mongoose = require("mongoose");
+const findOrCreate = require('mongoose-find-or-create');
+
 // schema setup
 const chatSchema = mongoose.Schema({
-    author: {
-        id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-        },
-        username: 'String'
-    },
-    otherPerson: {
-        id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-        }
-    },
+    sender: 'String',
+    reciever: 'String',
     comments: [
         {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Comment'
+            author: 'String',
+            text: 'String'
         }
     ]
 });
 
+chatSchema.plugin(findOrCreate);
 module.exports = mongoose.model('Chat', chatSchema);

@@ -1,5 +1,6 @@
 body {
-    background-color: #DADADA;
+    /*background-color: #DADADA;*/
+    background-color: #5fcf80;
 }
 body > .grid {
     height: 100%;

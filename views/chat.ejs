@@ -16,16 +16,20 @@
         <p>Currently in call with: <span id="their-id"></span></p>
         <button class="ui button red inverted" type="button" id="endcall">End</button>
     </div>
-    <ul id="messages"></ul>
+
     <div id="vid-container">
         <video autoplay id="receivedvid"></video>
         <video id="myvid" autoplay muted="true" width="300px"></video>
     </div>
     <div id="sendBox">
+        <h3 class="ui dividing header">Chat</h3>
+        <div class="ui comments" id="messages">
+        </div>
         <div class="ui input">
             <input type="text" placeholder="Send message" id="msgtxt">
         </div>
         <button class="ui button red inverted" type="button" id="sendmsg">Send</button>
+        <button class="ui button red inverted" type="button" id="clear">Clear <i class="fa fa-trash"></i></button>
     </div>
 </div>
 
@@ -35,9 +39,12 @@
 <script>
     var peer = new Peer('<%= currentUser._id %>', {host: '192.168.0.108',port: <%= Port%>,path :'/peerjs',secure:true});
     console.log(peer);
+    var peerID;
+    var myusername;
     peer.on('open',(id)=>{
         console.log("My peer id is :" + id);
         peerID = id;
+        myusername = '<%= currentUser.username%>';
     });
 </script>
 <link rel="stylesheet" href="/css/chat.css">

@@ -4,13 +4,7 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const UserSchema = new mongoose.Schema({
     username:'String',
     password: 'String',
-    status: 'String'
-    // chats: [
-    //     {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: 'Chat'
-    //     }
-    // ]
+    avatar: 'String',
 });
 
 UserSchema.plugin(passportLocalMongoose);
