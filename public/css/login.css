@@ -1,6 +1,6 @@
 body {
-    /*background-color: #DADADA;*/
-    background-color: #5fcf80;
+    background: linear-gradient(-227deg, rgb(55, 236, 186) 0%, rgb(114, 175, 211) 100%);
+    /*background-color: #5fcf80;*/
 }
 body > .grid {
     height: 100%;
