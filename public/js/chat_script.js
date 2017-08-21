@@ -12,14 +12,35 @@ $(function () {
     let clearButton = $('#clear');
     let Otherpeerid, Otherusername='';
 
+    let msgaudio = new Audio('/sounds/messagetune.mp3');
+    let callaudio = new Audio('/sounds/calltune.mp3');
+    if (typeof callaudio.loop == 'boolean')
+    {
+        callaudio.loop = true;
+    }
+    else
+    {
+        callaudio.addEventListener('ended', function() {
+            this.currentTime = 0;
+            this.play();
+        }, false);
+    }
+
     $('#step3').hide();
     call.hide();
     sendBox.hide();
 
     peer.on('call',(call)=>{
+
         endcall.show();
+
         $('#callpeer').hide();
         acceptcall.click(()=>{
+
+            //kill so8und
+            callaudio.pause();
+            callaudio.currentTime = 0;
+
             call.answer(window.localStream);
             step3(call);
         });
@@ -27,6 +48,7 @@ $(function () {
         $('.ui.basic.modal.acceptCall').modal({
             closable: false
         }).modal('show');
+        callaudio.play();       //change here
     });
 
     step1();
@@ -197,6 +219,9 @@ $(function () {
                         call.show();
                         $('#top_banner').show();
                     } else {
+
+                        msgaudio.play();               //change here
+
                         $.post('/recievemsg',{
                             msg: data,
                             sender: myusername,
@@ -231,6 +256,11 @@ $(function () {
                 });
 
                 $('#rejectCall').click(()=>{
+
+                    //kill sound
+                    callaudio.pause();
+                    callaudio.currentTime = 0;
+
                     $('#top_banner').show();
                     conn.send('$END CALL$');
                     step2();
@@ -294,6 +324,9 @@ $(function () {
                     call.show();
                     $('#top_banner').show();
                 } else {
+
+                    msgaudio.play();               //change here
+
                     $.post('/recievemsg',{
                         msg: data,
                         sender: myusername,
@@ -382,6 +415,11 @@ $(function () {
             });
 
             $('#rejectCall').click(()=>{
+
+                //kill sound
+                callaudio.pause();
+                callaudio.currentTime = 0;
+
                 $('#top_banner').show();
                 conn.send('$END CALL$');
                 step2();
