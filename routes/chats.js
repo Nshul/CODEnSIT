@@ -3,15 +3,15 @@ const express    = require("express"),
     findOrCreate = require('mongoose-find-or-create'),
     Chat         = require("../models/chat");
 
-router.get('/sendmsg', (req,res)=> {
+router.post('/sendmsg', (req,res)=> {
     Chat.findOrCreate({
-        sender: req.query.sender,
-        reciever: req.query.receiver
+        sender: req.body.sender,
+        reciever: req.body.reciever
     }, (err, chat)=> {
         console.log("MESSAGE SENT");
         chat.comments.push({
-            text: req.query.msg,
-            author: req.query.sender
+            text: req.body.msg,
+            author: req.body.sender
         });
         chat.save();
         console.log(chat);
@@ -19,15 +19,15 @@ router.get('/sendmsg', (req,res)=> {
     });
 });
 
-router.get('/recievemsg', (req,res)=> {
+router.post('/recievemsg', (req,res)=> {
     Chat.findOrCreate({
-        sender: req.query.sender,
-        reciever: req.query.receiver
+        sender: req.body.sender,
+        reciever: req.body.reciever
     }, (err, chat)=> {
         console.log("MESSAGE RECIEVED");
         chat.comments.push({
-            text: req.query.msg,
-            author: req.query.receiver
+            text: req.body.msg,
+            author: req.body.reciever
         });
         chat.save();
         console.log(chat);
@@ -45,11 +45,12 @@ router.get('/getchat', (req,res)=> {
     });
 });
 
-router.get('/clearchat', (req,res)=> {
+router.post('/clearchat', (req,res)=> {
     Chat.findOrCreate({
-        sender: req.query.sender,
-        reciever: req.query.reciever
+        sender: req.body.sender,
+        reciever: req.body.reciever
     }, (err,chats)=> {
+        console.log(req.body);
         chats.comments = [];
         chats.save();
         console.log(chats.comments);

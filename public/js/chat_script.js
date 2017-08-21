@@ -18,6 +18,7 @@ $(function () {
     acceptcall.hide();
 
     peer.on('call',(call)=>{
+        console.log('CALLLLLL');
         acceptcall.show();
         endcall.show();
         $('#callpeer').hide();
@@ -45,6 +46,8 @@ $(function () {
         // Wait for stream on the call, then set peer video display
         call.on('stream', function(stream){
             $('#receivedvid').prop('src', URL.createObjectURL(stream));
+            $('#step3').show();
+            $('#top_banner').hide();
         });
 
         // UI stuff
@@ -59,9 +62,10 @@ $(function () {
                 $('#their-id').text(Otherusername);
             });
         } else {
-            $('#their-id').val(Otherusername);
+            $('#their-id').text(Otherusername);
         }
-        $('#step3').show();
+
+        call.on('close', step2);
         acceptcall.hide();
     }
 
@@ -80,8 +84,10 @@ $(function () {
     }
 
     clearButton.click(()=> {
-        $.get('/clearchat?sender=' + myusername +
-            '&reciever=' + Otherusername, (success)=> {
+        $.post('/clearchat',{
+            sender: myusername,
+            reciever: Otherusername
+        }, (success)=> {
             if(success){
                 msglist.html('');
             } else {
@@ -125,9 +131,11 @@ $(function () {
 
                 sendmsg.click(()=>{
                     conn.send(msgtxt.val());
-                    $.get('/sendmsg?msg='+msgtxt.val()
-                        + '&sender=' + myusername
-                        + '&receiver=' + Otherusername, function (success) {
+                    $.post('/sendmsg',{
+                        msg: msgtxt.val(),
+                        sender: myusername,
+                        reciever: Otherusername
+                    }, function (success) {
                         if(success){
                             msglist.append(`
                             <div class="comment">
@@ -141,7 +149,7 @@ $(function () {
                                     </div>
                                 </div>
                             </div>`);
-                            console.log("Message sent(connect.click()):",msgtxt.val());
+                            //console.log("Message sent(connect.click()):",msgtxt.val());
                             msgtxt.val('');
                         }
                     });
@@ -150,9 +158,11 @@ $(function () {
                 msgtxt.keydown((e)=> {
                     if(e.keyCode === 13) {
                         conn.send(msgtxt.val());
-                        $.get('/sendmsg?msg='+msgtxt.val()
-                            + '&sender=' + myusername
-                            + '&receiver=' + Otherusername, function (success) {
+                        $.post('/sendmsg',{
+                            msg: msgtxt.val(),
+                            sender: myusername,
+                            reciever: Otherusername
+                        }, function (success) {
                             if(success){
                                 msglist.append(`
                             <div class="comment">
@@ -166,7 +176,7 @@ $(function () {
                                     </div>
                                 </div>
                             </div>`);
-                                console.log("Message sent(connect.click()):",msgtxt.val());
+                                //console.log("Message sent(connect.click()):",msgtxt.val());
                                 msgtxt.val('');
                             }
                         });
@@ -179,10 +189,13 @@ $(function () {
                         step2();
                         $('#receivedvid').prop('src', '');
                         call.show();
+                        $('#top_banner').show();
                     } else {
-                        $.get('/recievemsg?msg='+data
-                            + '&sender=' + myusername
-                            + '&receiver=' + Otherusername, function (success) {
+                        $.post('/recievemsg',{
+                            msg: data,
+                            sender: myusername,
+                            reciever: Otherusername
+                        }, function (success) {
                             if(success){
                                 msglist.append(`
                                 <div class="comment">
@@ -196,7 +209,7 @@ $(function () {
                                         </div>
                                     </div>
                                 </div>`);
-                                console.log("Received(connect.click()):",data);
+                                //console.log("Received(connect.click()):",data);
                             }
                         });
                     }
@@ -204,6 +217,7 @@ $(function () {
 
                 endcall.click(()=>{
                     window.existingCall.close();
+                    $('#top_banner').show();
                     conn.send('$END CALL$');
                     step2();
                     $('#receivedvid').prop('src', '');
@@ -264,10 +278,13 @@ $(function () {
                     step2();
                     $('#receivedvid').prop('src', '');
                     call.show();
+                    $('#top_banner').show();
                 } else {
-                    $.get('/recievemsg?msg='+data
-                        + '&sender=' + myusername
-                        + '&receiver=' + Otherusername, function (success) {
+                    $.post('/recievemsg',{
+                        msg: data,
+                        sender: myusername,
+                        reciever: Otherusername
+                    }, function (success) {
                         if(success){
                             msglist.append(`
                             <div class="comment">
@@ -281,7 +298,7 @@ $(function () {
                                     </div>
                                 </div>
                             </div>`);
-                            console.log('Received(peer.on)',data);
+                            //console.log('Received(peer.on)',data);
                         }
                     });
                 }
@@ -289,9 +306,11 @@ $(function () {
 
             sendmsg.click(()=>{
                 conn.send(msgtxt.val());
-                $.get('/sendmsg?msg='+msgtxt.val()
-                    + '&sender=' + myusername
-                    + '&receiver=' + Otherusername, function (success) {
+                $.post('/sendmsg',{
+                    msg: msgtxt.val(),
+                    sender: myusername,
+                    reciever: Otherusername
+                }, function (success) {
                     if(success){
                         msglist.append(`
                             <div class="comment">
@@ -305,7 +324,7 @@ $(function () {
                                     </div>
                                 </div>
                             </div>`);
-                        console.log("Message sent(peer.on):",msgtxt.val());
+                        //console.log("Message sent(peer.on):",msgtxt.val());
                         msgtxt.val('');
                     }
                 });
@@ -314,9 +333,11 @@ $(function () {
             msgtxt.keydown((e)=> {
                 if(e.keyCode === 13) {
                     conn.send(msgtxt.val());
-                    $.get('/sendmsg?msg='+msgtxt.val()
-                        + '&sender=' + myusername
-                        + '&receiver=' + Otherusername, function (success) {
+                    $.post('/sendmsg',{
+                        msg: msgtxt.val(),
+                        sender: myusername,
+                        reciever: Otherusername
+                    }, function (success) {
                         if(success){
                             msglist.append(`
                             <div class="comment">
@@ -330,7 +351,7 @@ $(function () {
                                     </div>
                                 </div>
                             </div>`);
-                            console.log("Message sent(peer.on()):",msgtxt.val());
+                            //console.log("Message sent(peer.on()):",msgtxt.val());
                             msgtxt.val('');
                         }
                     });
@@ -343,6 +364,7 @@ $(function () {
                 step2();
                 $('#receivedvid').prop('src', '');
                 call.show();
+                $('#top_banner').show();
             });
         });
     });

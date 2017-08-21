@@ -5,12 +5,14 @@
 <% include ./partials/flash.ejs %>
 
 <div class="ui container">
-    <div class="ui input">
-        <input type="text" placeholder="Username to connect to" id="peerid">
+    <div id="top_banner">
+        <div class="ui input">
+            <input type="text" placeholder="Username to connect to" id="peerid">
+        </div>
+        <button class="ui button red inverted" type="button" id="buttonpeer">Connect</button>
+        <button class="ui button red inverted" type="button" id="callpeer">Call</button>
+        <button class="ui button red inverted" type="button" id="acceptcall">Accept Call</button>
     </div>
-    <button class="ui button red inverted"type="button" id="buttonpeer">Connect</button>
-    <button class="ui button red inverted"type="button" id="callpeer">Call</button>
-    <button class="ui button red inverted" type="button" id="acceptcall">Accept</button>
     <br>
     <div id="step3">
         <p>Currently in call with: <span id="their-id"></span></p>
@@ -28,11 +30,15 @@
         <div class="ui input">
             <input type="text" placeholder="Send message" id="msgtxt">
         </div>
-        <button class="ui button red inverted" type="button" id="sendmsg">Send</button>
-        <button class="ui button red inverted" type="button" id="clear">Clear <i class="fa fa-trash"></i></button>
+        <button class="ui button red inverted" type="button" id="sendmsg" data-tooltip="Send message" data-position="bottom center">
+            <i class="fa fa-paper-plane" aria-hidden="true"></i>
+        </button>
+        <button class="ui button red inverted" type="button" id="clear" data-tooltip="Clear Chat" data-position="bottom center">
+            <i class="fa fa-trash"></i>
+        </button>
     </div>
 </div>
-
+<br><br>
 <% include ./partials/footer.ejs%>
 
 <script src="/js/peer.js"></script>
