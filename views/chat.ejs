@@ -4,38 +4,93 @@
 <br><br><br><br><br>
 <% include ./partials/flash.ejs %>
 
-<div class="ui container">
-    <div id="top_banner">
-        <div class="ui input">
-            <input type="text" placeholder="Username to connect to" id="peerid">
+<div class="ui container" id="outerbox">
+
+    <div class="ui twelve column centered grid">
+
+        <div class="five wide column" ><!--style="border: 1px solid black"-->
+            <div id="sendBox">
+                <h3 class="ui dividing header">Chat</h3>
+                <div class="ui comments" id="messages">
+                </div>
+
+
+                    <div class="ui input">
+                        <input type="text" placeholder="Send message" id="msgtxt">
+                    </div>
+
+                    <button class="ui button red inverted" type="button" id="sendmsg" data-tooltip="Send message" data-position="bottom center">
+                        <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                    </button>
+
+                    <button class="ui button red inverted" type="button" id="clearButton" data-tooltip="Clear Chat" data-position="bottom center">
+                        <i class="fa fa-trash"></i>
+                    </button>
+
+            </div>
         </div>
-        <button class="ui button red inverted" type="button" id="buttonpeer">Connect</button>
-        <button class="ui button red inverted" type="button" id="callpeer">Call</button>
-    </div>
-    <br>
-    <div id="step3">
-        <p>Currently in call with: <span id="their-id"></span></p>
-        <button class="ui button red inverted" type="button" id="endcall">End</button>
+
+
+        <div class="seven wide column"> <!--style="border: 1px solid red"-->
+
+            <div id="top_banner">
+                <div class="ui seven column row" id="introtag">
+                    <div class="five wide column">
+                        <p class="typo">Hi <%= currentUser.username%></p>
+                        <p class="typo">Start Connecting</p>
+                    </div>
+                </div>
+
+                <div class="ui seven column row"> <!-- style="border: 1px solid purple"-->
+                    <div class="column"> <!-- style="border: 1px solid orange"-->
+                        <div class="ui transparent big input">
+                            <input type="text" placeholder="Username to connect to" id="peerid">
+                        </div>
+                        <button class="ui button circular icon huge" id="buttonpeer"><i class="icon connectdevelop"></i></button>
+                        <button class="ui button circular icon huge" id="callpeer"><i class="icon call"></i></button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="ui seven column row" id="step3">   <!--style="border: 1px solid purple"-->
+                <p class="typo2">In call with: <span id="their-id"></span> <button class="ui red button circular icon large" id="endcall"><i class="icon call"></i></button></p>
+            </div>
+
+            <div id="vid-container">
+                <video autoplay id="receivedvid"></video>
+                <video id="myvid" autoplay muted="true" width="250px"></video>
+            </div>
+
+        </div>
+
     </div>
 
-    <div id="vid-container">
-        <video autoplay id="receivedvid"></video>
-        <video id="myvid" autoplay muted="true" width="300px"></video>
-    </div>
-    <div id="sendBox">
-        <h3 class="ui dividing header">Chat</h3>
-        <div class="ui comments" id="messages">
-        </div>
-        <div class="ui input">
-            <input type="text" placeholder="Send message" id="msgtxt">
-        </div>
-        <button class="ui button red inverted" type="button" id="sendmsg" data-tooltip="Send message" data-position="bottom center">
-            <i class="fa fa-paper-plane" aria-hidden="true"></i>
-        </button>
-        <button class="ui button red inverted" type="button" id="clearButton" data-tooltip="Clear Chat" data-position="bottom center">
-            <i class="fa fa-trash"></i>
-        </button>
-    </div>
+
+    <!--<br>-->
+    <!--<div id="step3">-->
+        <!--<p>Currently in call with: <span id="their-id"></span></p>-->
+        <!--<button class="ui button red inverted" type="button" id="endcall">End</button>-->
+    <!--</div>-->
+
+    <!--<div id="vid-container">-->
+        <!--<video autoplay id="receivedvid"></video>-->
+        <!--<video id="myvid" autoplay muted="true" width="300px"></video>-->
+    <!--</div>-->
+    <!--<div id="sendBox">-->
+        <!--<h3 class="ui dividing header">Chat</h3>-->
+        <!--<div class="ui comments" id="messages">-->
+        <!--</div>-->
+        <!--<div class="ui input">-->
+            <!--<input type="text" placeholder="Send message" id="msgtxt">-->
+        <!--</div>-->
+        <!--<button class="ui button red inverted" type="button" id="sendmsg" data-tooltip="Send message" data-position="bottom center">-->
+            <!--<i class="fa fa-paper-plane" aria-hidden="true"></i>-->
+        <!--</button>-->
+        <!--<button class="ui button red inverted" type="button" id="clearButton" data-tooltip="Clear Chat" data-position="bottom center">-->
+            <!--<i class="fa fa-trash"></i>-->
+        <!--</button>-->
+    <!--</div>-->
 </div>
 <br><br>
 
@@ -113,6 +168,7 @@
     });
 </script>
 <link rel="stylesheet" href="/css/chat.css">
+<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
 <script src="/js/chat_script.js"></script>
 </body>
 </html>

@@ -36,7 +36,7 @@ $(function () {
 
         $('#callpeer').hide();
         acceptcall.click(()=>{
-
+            $('#myvid').show();
             //kill so8und
             callaudio.pause();
             callaudio.currentTime = 0;
@@ -51,9 +51,12 @@ $(function () {
         callaudio.play();       //change here
     });
 
+    $('#myvid').hide();
     step1();
 
+
     call.click(()=>{
+        $('#myvid').show();
         $('#callpeer').hide();
         console.log(Otherpeerid);
         var call = peer.call(Otherpeerid,window.localStream);
@@ -132,6 +135,7 @@ $(function () {
                 Otherpeerid = id;
 
                 connect.hide();
+                $('#introtag').hide();
                 call.show();
 
                 $.get('/getchat?sender=' + myusername +
@@ -213,6 +217,7 @@ $(function () {
 
                 conn.on('data',function (data) {
                     if(data==='$END CALL$'){
+                        $('#myvid').hide();
                         window.existingCall.close();
                         step2();
                         $('#receivedvid').prop('src', '');
@@ -247,6 +252,7 @@ $(function () {
                 });
 
                 endcall.click(()=>{
+                    $('#myvid').hide();
                     window.existingCall.close();
                     $('#top_banner').show();
                     conn.send('$END CALL$');
@@ -282,6 +288,7 @@ $(function () {
         conn.on('open',()=>{
 
             connect.hide();
+            $('#introtag').hide();
             call.show();
 
             for(var data in peer.connections) {
@@ -290,6 +297,7 @@ $(function () {
                     Otherpeerid = data;
                     $.get('/getusername?id=' + data, (Other)=>{
                         Otherusername = Other;
+                        $('#peerid').val(Otherusername);
                         $.get('/getchat?sender=' + myusername +
                             '&reciever=' + Otherusername, function (comments) {
                             for(let chat of comments) {
@@ -315,9 +323,9 @@ $(function () {
                     });
                 }
             }
-
             conn.on('data',(data)=>{
                 if(data==='$END CALL$'){
+                    $('#myvid').hide();
                     window.existingCall.close();
                     step2();
                     $('#receivedvid').prop('src', '');
@@ -406,6 +414,7 @@ $(function () {
             });
 
             endcall.click(()=>{
+                $('#myvid').hide();
                 window.existingCall.close();
                 conn.send('$END CALL$');
                 step2();

@@ -70,6 +70,25 @@
     display: none;
 }
 
+.typo{
+    font-family: 'Oswald',sans-serif;
+    font-size: 50px;
+}
+.typo2{
+    font-family: 'Oswald',sans-serif;
+    font-size: 30px;
+}
+#myvid{
+    position: fixed;
+    left:10px;
+    bottom: 10px;
+}
+
+    /*#outerbox{*/
+        /*margin: 10px;*/
+        /*box-shadow: 5px 5px 5px 2px grey;*/
+    /*}*/
+
 @media (max-width: 576px){
     .outer{
         height: 100px;
@@ -82,7 +101,7 @@
     box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 3px 10px 0 rgba(0, 0,0, 0.12), 0 5px 1px -2px rgba(0, 0, 0, 0.2);
     transition: all 0.4s cubic-bezier(.66,.32,.24,.85);
     max-width: 400px;
-    padding: 20px;
+    padding: 10px;
 }
 
 #messages {
