@@ -11,7 +11,6 @@
         </div>
         <button class="ui button red inverted" type="button" id="buttonpeer">Connect</button>
         <button class="ui button red inverted" type="button" id="callpeer">Call</button>
-        <button class="ui button red inverted" type="button" id="acceptcall">Accept Call</button>
     </div>
     <br>
     <div id="step3">
@@ -33,12 +32,72 @@
         <button class="ui button red inverted" type="button" id="sendmsg" data-tooltip="Send message" data-position="bottom center">
             <i class="fa fa-paper-plane" aria-hidden="true"></i>
         </button>
-        <button class="ui button red inverted" type="button" id="clear" data-tooltip="Clear Chat" data-position="bottom center">
+        <button class="ui button red inverted" type="button" id="clearButton" data-tooltip="Clear Chat" data-position="bottom center">
             <i class="fa fa-trash"></i>
         </button>
     </div>
 </div>
 <br><br>
+
+<!--Clear Chat Modal-->
+<div class="ui basic modal clearChat">
+    <div class="ui icon header">
+        <i class="archive icon" style="color: #fc4c4f"></i>
+        Delete All Messages
+    </div>
+    <div class="content">
+        <p style="text-align: center">Are you sure that you want to delete the chat messages permanently ?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red cancel inverted button">
+            <i class="remove icon"></i>
+            No
+        </div>
+        <div class="ui green ok inverted button" id="clear">
+            <i class="checkmark icon"></i>
+            Yes
+        </div>
+    </div>
+</div>
+
+<!--Accept Call Modal-->
+<div class="ui basic modal acceptCall">
+    <div class="ui icon header">
+        <i class="call icon" style="color: teal"></i>
+        Incoming Video Call
+    </div>
+    <div class="content">
+        <p style="text-align: center">Call from <span id="callOpposite"></span></p>
+    </div>
+    <div class="actions">
+        <div class="ui red cancel inverted button" id="rejectCall">
+            <i class="remove icon"></i>
+            Reject
+        </div>
+        <div class="ui green ok inverted button" id="acceptcall">
+            <i class="checkmark icon"></i>
+            Accept
+        </div>
+    </div>
+</div>
+
+<!--Warning Connect Modal-->
+<div class="ui basic modal warningConnect">
+    <div class="ui icon header">
+        <i class="warning sign icon" style="color: #fc4c4f"></i>
+        Warning !
+    </div>
+    <div class="content">
+        <p style="text-align: center">You cannot connect to yourself. Connect to some other user.</p>
+    </div>
+    <div class="actions">
+        <div class="ui red cancel inverted button" id="rejectCall">
+            <i class="remove icon"></i>
+            Ok
+        </div>
+    </div>
+</div>
+
 <% include ./partials/footer.ejs%>
 
 <script src="/js/peer.js"></script>

@@ -15,17 +15,18 @@ $(function () {
     $('#step3').hide();
     call.hide();
     sendBox.hide();
-    acceptcall.hide();
 
     peer.on('call',(call)=>{
-        console.log('CALLLLLL');
-        acceptcall.show();
         endcall.show();
         $('#callpeer').hide();
         acceptcall.click(()=>{
             call.answer(window.localStream);
             step3(call);
         });
+        $('#callOpposite').text(Otherusername);
+        $('.ui.basic.modal.acceptCall').modal({
+            closable: false
+        }).modal('show');
     });
 
     step1();
@@ -66,7 +67,6 @@ $(function () {
         }
 
         call.on('close', step2);
-        acceptcall.hide();
     }
 
     function step1(){
@@ -97,6 +97,12 @@ $(function () {
     });
 
     connect.click(()=>{
+        if(peerid.val()===myusername){
+            $('.ui.basic.modal.warningConnect').modal({
+                closable: false
+            }).modal('show');
+            return;
+        }
         $.get('/getpeerId?username=' + peerid.val(), function (id) {
             if(id!=='0'){
                 let conn = peer.connect(id);
@@ -217,6 +223,14 @@ $(function () {
 
                 endcall.click(()=>{
                     window.existingCall.close();
+                    $('#top_banner').show();
+                    conn.send('$END CALL$');
+                    step2();
+                    $('#receivedvid').prop('src', '');
+                    call.show();
+                });
+
+                $('#rejectCall').click(()=>{
                     $('#top_banner').show();
                     conn.send('$END CALL$');
                     step2();
@@ -366,6 +380,20 @@ $(function () {
                 call.show();
                 $('#top_banner').show();
             });
+
+            $('#rejectCall').click(()=>{
+                $('#top_banner').show();
+                conn.send('$END CALL$');
+                step2();
+                $('#receivedvid').prop('src', '');
+                call.show();
+            });
         });
+    });
+
+    $('#clearButton').click(()=>{
+        $('.ui.basic.modal.clearChat').modal({
+            closable: false
+        }).modal('show');
     });
 });
