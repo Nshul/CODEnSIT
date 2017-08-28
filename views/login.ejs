@@ -2,12 +2,12 @@
 <% include ./partials/animation.ejs%>
 <% include ./partials/flash.ejs %>
 
-<div class="ui middle aligned center aligned grid">
+<div class="ui middle aligned center aligned grid" style="background-image: url('/img/login.jpeg')">
     <div class="column">
         <form class="ui large form" action="/login" method="post">
             <div class="ui stacked segment">
                 <h2 class="ui teal image header">
-                    <div class="content">
+                    <div class="content" style="font-family: 'Bangers', cursive;">
                         Log-in to your account
                     </div>
                 </h2>
@@ -27,10 +27,10 @@
             </div>
             <div class="ui error message"></div>
         </form>
-        <div class="ui message">
+        <div class="ui message" style="font-family: 'Bangers', cursive;">
             New to us? <a href="/signup">Sign Up</a>
         </div>
-        <div class="ui message">
+        <div class="ui message" style="font-family: 'Bangers', cursive;">
             Back to homepage -> <a href="/">click here</a>
         </div>
     </div>
@@ -38,6 +38,7 @@
 <!--closing tag of div with id=box which is opened in animation.ejs -->
 </div>
 
+<link href="https://fonts.googleapis.com/css?family=Bangers" rel="stylesheet">
 <link rel="stylesheet" href="/css/login.css">
 <script src="/js/login.js"></script>
 </body>

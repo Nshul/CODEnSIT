@@ -8,6 +8,19 @@
     }
 }
 
+.handwriteFont{
+    font-family: 'Gloria Hallelujah', cursive;
+}
+.headingFont{
+    font-family: 'Luckiest Guy', cursive;
+}
+.commentFont{
+    font-family: 'Dancing Script', cursive;
+}
+.commentBox{
+    border: solid grey 1px;
+    border-radius: 5px;
+}
 #animation{
     position: fixed;
     top:0;
