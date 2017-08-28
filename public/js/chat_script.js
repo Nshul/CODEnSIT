@@ -28,6 +28,7 @@ $(function () {
 
     $('#step3').hide();
     call.hide();
+    $('#disconnectpeer').hide();
     sendBox.hide();
 
     peer.on('call',(call)=>{
@@ -54,6 +55,13 @@ $(function () {
     $('#myvid').hide();
     step1();
 
+
+
+
+    peer.on('disconnected',()=>{
+       alert("Disconnected");
+       location.reload(true);
+    });
 
     call.click(()=>{
         $('#myvid').show();
@@ -137,6 +145,7 @@ $(function () {
                 connect.hide();
                 $('#introtag').hide();
                 call.show();
+                $('#disconnectpeer').show();
 
                 $.get('/getchat?sender=' + myusername +
                     '&reciever=' + Otherusername, function (comments) {
@@ -222,7 +231,10 @@ $(function () {
                         step2();
                         $('#receivedvid').prop('src', '');
                         call.show();
+                        $('#disconnectpeer').show();
                         $('#top_banner').show();
+                    }else if(data==='$DISCONNECT PEER$'){
+                        $('#disconnectpeer').click();
                     } else {
 
                         msgaudio.play();               //change here
@@ -259,6 +271,13 @@ $(function () {
                     step2();
                     $('#receivedvid').prop('src', '');
                     call.show();
+                    $('#disconnectpeer').show();
+                });
+
+                $('#disconnectpeer').click(function () {
+                    conn.send('$DISCONNECT PEER$');
+                    console.log("disconnected button pressed");
+                    peer.disconnect();
                 });
 
                 $('#rejectCall').click(()=>{
@@ -272,6 +291,7 @@ $(function () {
                     step2();
                     $('#receivedvid').prop('src', '');
                     call.show();
+                    $('#disconnectpeer').show();
                 });
             } else {
                 alert('entered username does not exist or is not online');
@@ -290,6 +310,7 @@ $(function () {
             connect.hide();
             $('#introtag').hide();
             call.show();
+            $('#disconnectpeer').show();
 
             for(var data in peer.connections) {
                 if(peer.connections.hasOwnProperty(data)){
@@ -330,7 +351,10 @@ $(function () {
                     step2();
                     $('#receivedvid').prop('src', '');
                     call.show();
+                    $('#disconnectpeer').show();
                     $('#top_banner').show();
+                }else if(data==='$DISCONNECT PEER$'){
+                    $('#disconnectpeer').click();
                 } else {
 
                     msgaudio.play();               //change here
@@ -420,7 +444,14 @@ $(function () {
                 step2();
                 $('#receivedvid').prop('src', '');
                 call.show();
+                $('#disconnectpeer').show();
                 $('#top_banner').show();
+            });
+
+            $('#disconnectpeer').click(function () {
+                conn.send('$DISCONNECT PEER$');
+                console.log("disconnected button pressed");
+                peer.disconnect();
             });
 
             $('#rejectCall').click(()=>{
@@ -434,6 +465,7 @@ $(function () {
                 step2();
                 $('#receivedvid').prop('src', '');
                 call.show();
+                $('#disconnectpeer').show();
             });
         });
     });
